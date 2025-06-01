@@ -80,16 +80,20 @@ const server = http.createServer(app);
 
 // Allowed origins (for local + production)
 const allowedOrigins = [
-"http://localhost:5173",
-process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://sproject-chatapp.vercel.app",
+  process.env.CLIENT_URL,
 ];
 
 // Initialize socket.io server
 export const io = new Server(server, {
-cors: {
-origin: allowedOrigins,
-credentials: true,
-},
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://sproject-chatapp.vercel.app",
+    ],
+    credentials: true,
+  },
 });
 
 // Store online users
