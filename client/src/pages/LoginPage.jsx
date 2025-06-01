@@ -9,24 +9,32 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+const [agreedToTerms, setAgreedToTerms] = useState(false);
+const [attempted, setAttempted] = useState(false);
 
   const { login } = useContext(AuthContext);
 
-  const onSubmitHandler = (event) => {
-    event.preventDefault();
+// 2. Block submission if not agreed
+const onSubmitHandler = (event) => {
+  event.preventDefault();
 
-    if (currState === "Sign up" && !isDataSubmitted) {
-      setIsDataSubmitted(true);
-      return;
-    }
+  if (!agreedToTerms) {
+    setAttempted(true); // marks that they tried without checking
+    return;
+  }
 
-    login(currState === "Sign up" ? "signup" : "login", {
-      fullName,
-      email,
-      password,
-      bio,
-    });
-  };
+  if (currState === "Sign up" && !isDataSubmitted) {
+    setIsDataSubmitted(true);
+    return;
+  }
+
+  login(currState === "Sign up" ? "signup" : "login", {
+    fullName,
+    email,
+    password,
+    bio,
+  });
+};
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
@@ -101,10 +109,20 @@ className="py-3 bg-gradient-to-r from-[#66ff33] to-[#1aff00] text-black rounded-
   {currState === "Sign up" ? "Create Account" : "Login Now"}
 </button>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <input type="checkbox" />
-          <p>Agree to the terms of use & privacy policy.</p>
-        </div>
+<div className="flex items-center gap-2 text-sm text-gray-500">
+  <input
+    type="checkbox"
+    checked={agreedToTerms}
+    onChange={(e) => {
+      setAgreedToTerms(e.target.checked);
+      if (e.target.checked) setAttempted(false); // clears red once they check it
+    }}
+    className={attempted && !agreedToTerms ? "accent-red-500 outline outline-2 outline-red-500 rounded" : ""}
+  />
+  <p className={attempted && !agreedToTerms ? "text-red-500" : ""}>
+    Agree to the terms of use & privacy policy.
+  </p>
+</div>
 
         <div className="flex flex-col gap-2">
           {currState === "Sign up" ? (

@@ -72,7 +72,7 @@ const ChatContainer = () => {
           onClick={() => setSelectedUser(null)}
           src={assets.arrow_icon}
           alt="arrow"
-          className="md:hidden max-w-7"
+          className="max-w-7"
         />
         <img
           src={assets.help_icon}
