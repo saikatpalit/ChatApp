@@ -36,7 +36,8 @@ const LoginPage = () => {
       {/* -------- right -------- */}
       <form
         onSubmit={onSubmitHandler}
-        className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
+        className="border-2 bg-white/8 text-white
+        border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
       >
         <h2 className="font-medium text-2xl flex justify-between items-center">
           {currState}
@@ -93,12 +94,12 @@ const LoginPage = () => {
           ></textarea>
         )}
 
-        <button
-          type="submit"
-          className="py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer"
-        >
-          {currState === "Sign up" ? "Create Account" : "Login Now"}
-        </button>
+<button
+  type="submit"
+className="py-3 bg-gradient-to-r from-[#66ff33] to-[#1aff00] text-black rounded-md cursor-pointer"
+>
+  {currState === "Sign up" ? "Create Account" : "Login Now"}
+</button>
 
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <input type="checkbox" />
@@ -114,7 +115,7 @@ const LoginPage = () => {
                   setCurrentState("Login");
                   setIsDataSubmitted(false);
                 }}
-                className="font-medium text-violet-500 cursor-pointer"
+                className="font-medium text-[#39ff14] cursor-pointer"
               >
                 Login here
               </span>
@@ -124,7 +125,7 @@ const LoginPage = () => {
               Create an account{" "}
               <span
                 onClick={() => setCurrentState("Sign up")}
-                className="font-medium text-violet-500 cursor-pointer"
+                className="font-medium text-[#39ff14] cursor-pointer"
               >
                 Click here
               </span>
