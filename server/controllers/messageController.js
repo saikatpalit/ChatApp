@@ -79,6 +79,11 @@ export const sendMessage = async (req, res) => {
     const receiverId = req.params.id;
     const senderId = req.user._id;
 
+    
+   if (req.user.email === "guest@quickchat.com") {
+      return res.json({ success: false, message: "Guests cannot send messages. Please create an account." });
+    }
+
     let imageUrl;
     if (image) {
       const uploadResponse = await cloudinary.uploader.upload(image);

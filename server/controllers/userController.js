@@ -104,3 +104,35 @@ export const updateProfile = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+
+// Controller for guest login
+export const guestLogin = async (req, res) => {
+  try {
+    const guestEmail = "guest@quickchat.com";
+
+    let guestUser = await User.findOne({ email: guestEmail });
+
+    if (!guestUser) {
+      guestUser = await User.create({
+        fullName: "Guest User",
+        email: guestEmail,
+        password: "guest_no_login",
+        bio: "Browsing as a guest",
+        profilePic: "",
+      });
+    }
+
+    const token = generateToken(guestUser._id);
+
+    return res.json({
+      success: true,
+      userData: guestUser,
+      token,
+      message: "Logged in as guest",
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};

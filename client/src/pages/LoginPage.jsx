@@ -2,6 +2,28 @@ import { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { AuthContext } from "../../context/AuthContext";
 
+// small reusable spinner
+const Spinner = () => (
+  <svg
+    className="animate-spin h-4 w-4"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12" cy="12" r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    />
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v8z"
+    />
+  </svg>
+);
+
 const LoginPage = () => {
   const [currState, setCurrentState] = useState("Sign up");
   const [fullName, setFullName] = useState("");
@@ -11,15 +33,23 @@ const LoginPage = () => {
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
 const [agreedToTerms, setAgreedToTerms] = useState(false);
 const [attempted, setAttempted] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useContext(AuthContext);
 
+
+const onGuestLogin = async () => {
+  setIsLoading(true);
+  await login("guest", {});
+  setIsLoading(false);
+};
+
 // 2. Block submission if not agreed
-const onSubmitHandler = (event) => {
+const onSubmitHandler = async (event) => {
   event.preventDefault();
 
   if (!agreedToTerms) {
-    setAttempted(true); // marks that they tried without checking
+    setAttempted(true);
     return;
   }
 
@@ -28,13 +58,16 @@ const onSubmitHandler = (event) => {
     return;
   }
 
-  login(currState === "Sign up" ? "signup" : "login", {
+  setIsLoading(true);
+  await login(currState === "Sign up" ? "signup" : "login", {
     fullName,
     email,
     password,
     bio,
   });
+  setIsLoading(false);
 };
+
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
@@ -42,6 +75,8 @@ const onSubmitHandler = (event) => {
       <img src={assets.logo_big} alt="logo" className="w-[min(30vw,250px)]" />
 
       {/* -------- right -------- */}
+
+      <div className="flex flex-col gap-3"> 
       <form
         onSubmit={onSubmitHandler}
         className="border-2 bg-white/8 text-white
@@ -104,9 +139,17 @@ const onSubmitHandler = (event) => {
 
 <button
   type="submit"
-className="py-3 bg-gradient-to-r from-[#66ff33] to-[#1aff00] text-black rounded-md cursor-pointer"
+  disabled={isLoading}
+  className="py-3 bg-gradient-to-r from-[#66ff33] to-[#1aff00] text-black rounded-md cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
 >
-  {currState === "Sign up" ? "Create Account" : "Login Now"}
+  {isLoading ? (
+    <>
+      <Spinner />
+      Please wait...
+    </>
+  ) : (
+    currState === "Sign up" ? "Create Account" : "Login Now"
+  )}
 </button>
 
 <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -151,6 +194,30 @@ className="py-3 bg-gradient-to-r from-[#66ff33] to-[#1aff00] text-black rounded-
           )}
         </div>
       </form>
+
+
+      <div className="flex items-center gap-1.5 my-2">
+  <hr className="flex-1 border-gray-500" />
+  <span className="text-gray-500 text-xs">or</span>
+  <hr className="flex-1 border-gray-500" />
+</div>
+
+<button
+  type="button"
+  onClick={onGuestLogin}
+  disabled={isLoading}
+  className="w-full py-3 border border-gray-500 text-gray-300 rounded-md cursor-pointer hover:bg-white/10 transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-70"
+>
+  {isLoading ? (
+    <>
+      <Spinner />
+      Please wait...
+    </>
+  ) : (
+    "Continue as Guest"
+  )}
+</button>
+</div>
     </div>
   );
 };
